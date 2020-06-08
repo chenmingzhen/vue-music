@@ -37,7 +37,7 @@
             display: inline-block;
             vertical-align: top;
             line-height: 1.173rem;
-            font-size: $font-size-large;
+            font-size: 0.8rem;
         }
     }
 </style>

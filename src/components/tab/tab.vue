@@ -19,7 +19,7 @@
         display: flex;
         height: 1.173rem;
         line-height: 1.173rem;
-        font-size: $font-size-medium;
+        font-size: $font-size-large-x;
         .tab-item{
             flex: 1;
             text-align: center;
