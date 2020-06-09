@@ -2,6 +2,7 @@
     <div id="app">
         <m-header></m-header>
         <tab></tab>
+        <refresh></refresh>
         <keep-alive>
             <router-view/>
         </keep-alive>
@@ -10,11 +11,13 @@
 <script>
   import MHeader from "./components/m-header/m-header";
   import Tab from './components/tab/tab.vue';
+  import Refresh from "../src/base/refresh/refresh";
 
   export default {
     components: {
       MHeader,
-      Tab
+      Tab,
+      Refresh
     }
   };
 
@@ -30,4 +33,8 @@
     window.onresize = a;
   })();
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+    .app {
+        position: relative;
+    }
+</style>

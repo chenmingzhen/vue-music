@@ -6,8 +6,11 @@
 </template>
 
 <script>
+  import {recommendMixin} from "../../utils/mixin";
+  import {eventBus} from "../../main";
   export default {
     name: 'scroll',
+    mixins: [recommendMixin],
     data: function () {
       return {
         startPoint: {},
@@ -36,14 +39,26 @@
       },
       handleEnd(e) {
         if (this.offsetY === 0 && (this.endPoint.y - this.startPoint.y > 100)) {
-          console.log('show');
           this.startPoint.y = 0;
           this.endPoint.y = 0;
         }
+        this.setScrollMove(false);
+        if(this.recommendScroll>300){
+          this.setScrollFix(true);
+          eventBus.$emit('refreshData');
+        }
+        eventBus.$emit('refreshDone');
       },
       handleMove(e) {
-        let touch = e.changedTouches[0];
+        let touch = e.targetTouches[0];
         this.endPoint.y = touch.pageY;
+        if (!this.columnMove) {
+          this.setScrollMove(true);
+          if (this.scrollFix) {
+            return ;
+          }
+          this.setRecommendScroll(e.targetTouches[0].pageY);
+        }
       },
       handleScroll(e) {
         const offsetY = e.target.scrollTop || window.pageYOffset || document.body.scrollTop;

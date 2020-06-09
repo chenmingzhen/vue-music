@@ -20,6 +20,9 @@
         height: 1.173rem;
         line-height: 1.173rem;
         font-size: $font-size-large-x;
+        background-color: $color-background;
+        z-index: 1000;
+        position: relative;
         .tab-item{
             flex: 1;
             text-align: center;

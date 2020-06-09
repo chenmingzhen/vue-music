@@ -7,6 +7,10 @@ import fastClick from "fastclick";
 import VueLazyLoad from "vue-lazyload";
 Vue.config.productionTip = false;
 //fastClick.attach(document.body);
+
+/*兄弟组件传值 eventBus*/
+export const eventBus=new Vue();
+
 Vue.use(VueLazyLoad,{
   loading:require('../src/assets/image/loading.gif')
 });

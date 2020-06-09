@@ -4,7 +4,7 @@
             <div class="title">{{columnData.title}}</div>
             <div class="more">更多></div>
         </div>
-        <div class="list">
+        <div class="list" @touchmove="_columnMove" @touchend="_columnEnd">
             <div class="list-item" v-for="(item,index) in columnData" :key="index">
                 <div class="img">
                     <a>
@@ -18,12 +18,23 @@
 </template>
 
 <script>
+  import {recommendMixin} from "../../utils/mixin";
+
   export default {
     name: "column",
+    mixins: [recommendMixin],
     props: {
       columnData: {
         type: Array,
         default: null
+      }
+    },
+    methods: {
+      _columnMove() {
+        this.setColumnMove(true);
+      },
+      _columnEnd() {
+        this.setColumnMove(false);
       }
     }
   };
@@ -59,9 +70,9 @@
             .more {
                 font-size: 0.64rem;
                 flex: 0 1 auto;
-                border: 0.12rem  solid $color-theme ;
+                border: 0.12rem solid $color-theme;
                 border-radius: 0.8rem;
-                padding: 0.2rem 0.6rem ;
+                padding: 0.2rem 0.6rem;
             }
         }
 
@@ -69,6 +80,8 @@
             overflow-x: scroll;
             white-space: nowrap;
             width: 100%;
+            /*柔顺*/
+            -webkit-overflow-scrolling: touch;
 
             .list-item {
                 display: inline-block;
@@ -80,6 +93,9 @@
                     img {
                         width: 100%;
                         border-radius: 0.8rem;
+                        /*不明原因部分图片高 部分低 用这个办法限制住*/
+                        max-height: 5rem;
+                        min-height: 5rem;
                     }
                 }
 

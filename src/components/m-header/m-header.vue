@@ -21,7 +21,8 @@
         text-align: center;
         color: $color-theme;
         font-size: 0;
-
+        background-color: $color-background;
+        z-index: 1000;
         .icon {
             display: inline-block;
             vertical-align: top;
