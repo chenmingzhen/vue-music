@@ -41,6 +41,7 @@
                         href="https://github.com/chenmingzhen/vue-music">github.io</a></p>
             </div>
         </scroll>
+        <Toast :text="toastText" v-if="toastShow" @destroy="toastVisible"></Toast>
     </div>
 </template>
 
@@ -50,7 +51,7 @@
   import Column from "../../base/column/column";
   import Scroll from "../../base/scroll/scroll";
   import {eventBus} from "../../main";
-
+  import Toast from "../../base/toast/toast";
   export default {
     name: "recommend",
     data() {
@@ -61,7 +62,9 @@
         asiaHighQualityColumn: [],
         europeHighQualityColumn: [],
         popHighQualityColumn: [],
-        classicalHighQualityColumn: []
+        classicalHighQualityColumn: [],
+        toastText:'刷新失败',
+        toastShow:false
       };
     },
     created() {
@@ -72,6 +75,9 @@
         Promise.all([this.initBanner(), this.initColumn()]).then(() => {
           //下滑刷新隐藏 位置回调
           eventBus.$emit('refreshDone');
+        }).catch(e=>{
+          this.toastVisible();
+          console.log(this.toastShow);
         });
       });
     },
@@ -133,12 +139,19 @@
           });
           resolve();
         });
+      },
+      toastVisible(){
+        this.toastShow=!this.toastShow;
+        setTimeout(()=>{
+          this.toastShow=!this.toastShow;
+        },2000);
       }
     },
     components: {
       Slider,
       Column,
-      Scroll
+      Scroll,
+      Toast
     }
   };
 </script>
