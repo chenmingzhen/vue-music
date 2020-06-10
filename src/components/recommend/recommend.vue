@@ -49,7 +49,7 @@
   import Slider from "../../base/slider/slider";
   import {getBanner, getOfficialColumn, getExcellentColumn, getCategoryColumn} from '../../api/recommend.js';
   import Column from "../../base/column/column";
-  import Scroll from "../../base/scroll/scroll";
+  import Scroll from "../../base/scroll/recommendScroll";
   import {eventBus} from "../../main";
   import Toast from "../../base/toast/toast";
   export default {
