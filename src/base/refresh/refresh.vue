@@ -19,6 +19,7 @@
     },
     watch: {
       recommendScroll(val) {
+
         if (val < 300 && this.scrollFix === false) {
           if (!this.scrollMove) {
             this.setScrollFix(true);
@@ -49,12 +50,12 @@
     .refresh-wrapper {
         position: absolute;
         left: 50%;
-        transform: translateX(-50%);
+        //transform: translateX(-50%);
         z-index: 100;
         border-radius: 50%;
         width: 1.333rem;
         height: 1.333rem;
-        top: 3.5%;
+        top: -8.5%;
         transition: opacity 1s;
 
         .img {

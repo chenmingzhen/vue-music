@@ -3,7 +3,8 @@ const recommend={
         recommendScroll:0,
         scrollMove:false,
         columnMove:false,
-        scrollFix:false
+        scrollFix:false,
+        recommendOffsetY:0
     },
     mutations:{
         SET_RECOMMENDSCROLL:(state,recommendScroll)=>{
@@ -17,6 +18,9 @@ const recommend={
         },
         SET_SCROLLFIX:(state,scrollFix)=>{
             state.scrollFix=scrollFix;
+        },
+        SET_RECOMMENDOFFSETY:(state,recommendOffsetY)=>{
+            state.recommendOffsetY=recommendOffsetY;
         }
     }
 };

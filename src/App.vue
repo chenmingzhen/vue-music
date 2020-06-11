@@ -2,7 +2,7 @@
     <div id="app">
         <m-header></m-header>
         <tab></tab>
-        <refresh></refresh>
+        <!--<refresh></refresh>-->
         <keep-alive>
             <router-view/>
         </keep-alive>
@@ -17,7 +17,7 @@
     components: {
       MHeader,
       Tab,
-      Refresh
+      /*Refresh*/
     }
   };
 
@@ -36,5 +36,8 @@
 <style lang="scss">
     .app {
         position: relative;
+        .m-header,.tab{
+            z-index: 1000;
+        }
     }
 </style>

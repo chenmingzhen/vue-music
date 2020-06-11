@@ -1,6 +1,6 @@
 <template>
     <div class="recommend" ref="recommend">
-        <scroll ref="scroll" class="recommend-content" :top=64.9>
+        <scroll ref="scroll" class="recommend-content" :top=64.9 @onScroll="onScroll">
             <!--当有数据的时候再渲染-->
             <div class="slider-wrapper" ref="sliderWrapper" v-if="recommends.length">
                 <slider>
@@ -42,6 +42,7 @@
             </div>
         </scroll>
         <Toast :text="toastText" v-if="toastShow" @destroy="toastVisible"></Toast>
+        <refresh></refresh>
     </div>
 </template>
 
@@ -52,6 +53,9 @@
   import Scroll from "../../base/scroll/recommendScroll";
   import {eventBus} from "../../main";
   import Toast from "../../base/toast/toast";
+  import Refresh from "../../base/refresh/refresh";
+  import {recommendMixin} from "../../utils/mixin";
+
   export default {
     name: "recommend",
     data() {
@@ -66,6 +70,10 @@
         toastText:'刷新失败',
         toastShow:false
       };
+    },
+    mixins:[recommendMixin],
+    activated() {
+      this.$refs.scroll.scrollTo(0,this.recommendOffsetY);
     },
     created() {
       this.initBanner();
@@ -145,13 +153,17 @@
         setTimeout(()=>{
           this.toastShow=!this.toastShow;
         },2000);
+      },
+      onScroll(offsetY){
+        this.setRecommendOffsetY(offsetY);
       }
     },
     components: {
       Slider,
       Column,
       Scroll,
-      Toast
+      Toast,
+      Refresh
     }
   };
 </script>

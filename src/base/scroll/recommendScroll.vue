@@ -41,12 +41,13 @@
         if (this.offsetY === 0 && (this.endPoint.y - this.startPoint.y > 100)) {
           this.startPoint.y = 0;
           this.endPoint.y = 0;
+          this.setScrollMove(false);
+          if(this.recommendScroll>300){
+            this.setScrollFix(true);
+            eventBus.$emit('refreshData');
+          }
         }
-        this.setScrollMove(false);
-        if(this.recommendScroll>300){
-          this.setScrollFix(true);
-          eventBus.$emit('refreshData');
-        }
+
         eventBus.$emit('refreshDone');
       },
       handleMove(e) {
@@ -57,7 +58,9 @@
           if (this.scrollFix) {
             return ;
           }
-          this.setRecommendScroll(e.targetTouches[0].pageY);
+          if(this.offsetY===0){
+            this.setRecommendScroll(e.targetTouches[0].pageY);
+          }
         }
       },
       handleScroll(e) {

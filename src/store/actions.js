@@ -10,6 +10,9 @@ const actions={
     },
     setScrollFix:({commit},scrollFix)=>{
         return commit('SET_SCROLLFIX',scrollFix);
+    },
+    setRecommendOffsetY:({commit},recommendOffsetY)=>{
+        return commit('SET_RECOMMENDOFFSETY',recommendOffsetY);
     }
 };
 export default actions;

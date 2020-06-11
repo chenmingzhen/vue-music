@@ -82,7 +82,7 @@
             width: 100%;
             /*柔顺*/
             -webkit-overflow-scrolling: touch;
-
+            overflow-y: hidden;
             .list-item {
                 display: inline-block;
                 flex-direction: column;
