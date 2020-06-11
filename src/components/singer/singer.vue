@@ -4,67 +4,99 @@
             <my-select :data="categoryData" @select="selectFromCategory" :select-item="selectList.category"></my-select>
             <my-select :data="areaData" @select="selectFromArea" :select-item="selectList.area"></my-select>
         </div>
-        <scroll ref="scroll" :top=153.3 :bottom=-10>
-            <div>1</div>
-            <div>2</div>
-            <div>3</div>
-            <div>4</div>
-            <div>5</div>
-            <div>6</div>
-            <div>7</div>
-            <div>8</div>
-            <div>9</div>
-            <div>10</div>
-            <div>11</div>
-            <div>12</div>
-            <div>13</div>
-            <div>14</div>
-            <div>15</div>
-            <div>16</div>
-            <div>17</div>
-            <div>18</div>
-            <div>19</div>
-            <div>20</div>
-            <div>21</div>
-            <div>22</div>
-            <div>23</div>
-            <div>24</div>
-            <div>25</div>
-            <div>26</div>
-            <div>27</div>
-            <div>28</div>
-            <div>29</div>
-            <div>30</div>
+        <scroll ref="scroll" :top=153.3 :bottom=-10 class="scroll">
+            <div class="singer-wrapper" v-if="singerData.length">
+                <singer-item v-for="(item,index) in singerData" :key="index" :data="item"></singer-item>
+            </div>
+            <Loading class="loading-wrapper" :text="String('加载中...')" v-else-if="!singerData.length&&fail===0"></Loading>
+            <fail class="fail-wrapper" v-else :text="String('加载失败')">
+            </fail>
         </scroll>
     </div>
 </template>
 
 <script>
-  import {getHotSinger} from "../../api/singer";
+  import {getSinger} from "../../api/singer";
   import Scroll from "../../base/scroll/scroll";
   import MySelect from "../../base/select/singSelect";
+  import SingerItem from "../../base/singerItem/singerItem";
+  import NProgress from 'nprogress';
+  import '../../assets/sass/nprogress.scss';
+  import Loading from "../../base/loading/loading";
+  import Fail from "../../base/fail/fail";
+  NProgress.configure({showSpinner: false, parent: '.scroll'});
   export default {
     name: "singer",
-    components: {Scroll,MySelect},
-    data(){
-      return{
-        categoryData:{title:'分类:',list:['全部','男歌手','女歌手','乐队组合']},
-        areaData:{title:'语种:',list:['全部','华语','欧美','日本','韩国','其他']},
-        selectList:{category:0,area:0}
+    components: {Scroll, MySelect, SingerItem,Loading,Fail},
+    data() {
+      return {
+        categoryData: {title: '分类:', list: ['全部', '男歌手', '女歌手', '乐队组合']},
+        areaData: {title: '语种:', list: ['全部', '华语', '欧美', '日本', '韩国', '其他']},
+        selectList: {category: 0, area: 0},
+        singerData: {},
+        selectIndex: {categoryIndex: -1, areaIndex: -1},
+        fail:0
       };
     },
     created() {
-      this.initSinger();
+      this.initSinger({});
     },
     methods: {
-      initSinger() {
-        getHotSinger().then(data => console.log(data));
+      initSinger({type = this.selectIndex.categoryIndex, area = this.selectIndex.areaIndex}) {
+        getSinger({type, area}).then(data => {
+          this.singerData = data.artists;
+          NProgress.done();
+          //this.$refs.scroll.scrollTo(0,0);
+        }).catch(e => {
+          NProgress.done();
+          // TODO 添加刷新失败信息
+          this.fail=-1;
+          console.log(e);
+        });
       },
-      selectFromCategory(index){
-        this.selectList.category=index;
+      selectFromCategory(index) {
+        this.fail=0;
+        this.startProgress();
+        this.selectList.category = index;
+        if (index === 0) {
+          index===-1;
+        }
+        this.singerData = {};
+        this.selectIndex.categoryIndex = index;
+        this.initSinger({});
       },
-      selectFromArea(index){
-        this.selectList.area=index;
+      selectFromArea(index) {
+        this.fail=0;
+        this.startProgress();
+        switch (index) {
+        case 0:
+          this.selectIndex.areaIndex = -1;
+          break;
+        case 1:
+          this.selectIndex.areaIndex = 7;
+          break;
+        case 2:
+          this.selectIndex.areaIndex = 96;
+          break;
+        case 3:
+          this.selectIndex.areaIndex = 8;
+          break;
+        case 4:
+          this.selectIndex.areaIndex = 16;
+          break;
+        case 5:
+          this.selectIndex.areaIndex = 0;
+          break;
+        }
+        this.singerData = {};
+        this.selectList.area = index;
+        this.initSinger({});
+      },
+      startProgress() {
+        /*因为parent是在本文件 未加载完毕 要使用栈 让这里最后执行*/
+        setTimeout(() => {
+          NProgress.start();
+        });
       }
     }
   };
@@ -76,12 +108,14 @@
     .singer-wrapper {
         box-sizing: border-box;
         padding: 0.08rem 0.533rem;
+
         .select-wrapper {
             .category-wrapper {
-                &:last-child{
+                &:last-child {
                     border-bottom: 1px gray solid;
                     padding-bottom: 0.267rem;
                 }
+
                 margin-top: 0.533rem;
                 display: flex;
                 align-items: center;
@@ -116,6 +150,13 @@
                         }
                     }
                 }
+            }
+        }
+
+        .scroll {
+            .loading-wrapper {
+                font-size: 0.8rem;
+                color: #ffcd32;
             }
         }
     }
