@@ -6,12 +6,13 @@
         </div>
         <scroll ref="scroll" :top=153.3 :bottom=-10 class="scroll">
             <div class="singer-wrapper" v-if="singerData.length">
-                <singer-item v-for="(item,index) in singerData" :key="index" :data="item"></singer-item>
+                <singer-item v-for="(item,index) in singerData" :key="index" :data="item" @selectItem="handleSelect"></singer-item>
             </div>
             <Loading class="loading-wrapper" :text="String('加载中...')" v-else-if="!singerData.length&&fail===0"></Loading>
             <fail class="fail-wrapper" v-else :text="String('加载失败')">
             </fail>
         </scroll>
+        <router-view></router-view>
     </div>
 </template>
 
@@ -24,10 +25,13 @@
   import '../../assets/sass/nprogress.scss';
   import Loading from "../../base/loading/loading";
   import Fail from "../../base/fail/fail";
+  import {singerMixin} from "../../utils/mixin";
+
   NProgress.configure({showSpinner: false, parent: '.scroll'});
   export default {
     name: "singer",
     components: {Scroll, MySelect, SingerItem,Loading,Fail},
+    mixins:[singerMixin],
     data() {
       return {
         categoryData: {title: '分类:', list: ['全部', '男歌手', '女歌手', '乐队组合']},
@@ -97,6 +101,10 @@
         setTimeout(() => {
           NProgress.start();
         });
+      },
+      handleSelect(singer){
+        this.setSinger(singer);
+        this.$router.push({path:`/singer/singerDetail${singer.id}`});
       }
     }
   };

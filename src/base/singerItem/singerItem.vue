@@ -1,5 +1,5 @@
 <template>
-    <div class="item-wrapper">
+    <div class="item-wrapper" @click="selectItem">
         <div class="img"><img v-lazy="data.picUrl" ></div>
         <div class="name-wrapper">
             <div class="name">{{data.name}}</div>
@@ -16,6 +16,11 @@
       data:{
         type:Object,
         default:null
+      }
+    },
+    methods:{
+      selectItem(){
+        this.$emit('selectItem',this.data);
       }
     }
   };

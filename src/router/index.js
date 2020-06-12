@@ -22,6 +22,13 @@ const routes = [
     {
         path: '/singer',
         component: () => import('../components/singer/singer.vue'),
+        children:[
+            {
+                /*从/singer到这个路由的时候带参数  this.$router.push({path:`/singer/${singer.id}`}) 后面可以直接拿到id;*/
+                path: 'singerDetail:id',
+                component:()=>import('../components/singerDetail/singerDetail')
+            }
+        ]
     },
     {
         path: '/rank',

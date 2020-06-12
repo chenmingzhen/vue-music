@@ -16,3 +16,12 @@ export const recommendMixin={
         }
     }
 };
+
+export const singerMixin={
+    computed: {
+        ...mapGetters(['singer'])
+    },
+    methods: {
+        ...mapActions(['setSinger'])
+    }
+};

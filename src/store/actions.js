@@ -1,4 +1,5 @@
 const actions={
+    /*recommend*/
     setRecommendScroll:({commit},recommendScroll)=>{
         return commit('SET_RECOMMENDSCROLL',recommendScroll);
     },
@@ -13,6 +14,10 @@ const actions={
     },
     setRecommendOffsetY:({commit},recommendOffsetY)=>{
         return commit('SET_RECOMMENDOFFSETY',recommendOffsetY);
+    },
+    /*singer*/
+    setSinger:({commit},singer)=>{
+        return commit('SET_SINGER',singer);
     }
 };
 export default actions;

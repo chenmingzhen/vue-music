@@ -1,8 +1,11 @@
 const all={
+    /*recommend*/
     recommendScroll:state=>state.recommend.recommendScroll,
     columnMove:state=>state.recommend.columnMove,
     scrollMove:state=>state.recommend.scrollMove,
     scrollFix:state=>state.recommend.scrollFix,
-    recommendOffsetY:state=>state.recommend.recommendOffsetY
+    recommendOffsetY:state=>state.recommend.recommendOffsetY,
+    /*singer*/
+    singer:state=>state.singer.singer
 };
 export default all;

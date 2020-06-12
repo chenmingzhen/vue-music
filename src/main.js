@@ -7,7 +7,6 @@ import fastClick from "fastclick";
 import VueLazyLoad from "vue-lazyload";
 Vue.config.productionTip = false;
 
-
 /*import 'nprogress/nprogress.css';*/
 
 /*兄弟组件传值 eventBus*/
