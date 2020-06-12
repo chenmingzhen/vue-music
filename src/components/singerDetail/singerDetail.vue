@@ -1,16 +1,18 @@
 <template>
     <transition name="fade-slide-right" appear>
-        <div class="singerDetail">singerDetail</div>
+        <music-list :title="title" :bg-image="bgImage" :songs="songs"></music-list>
     </transition>
 </template>
 
 <script>
   import {getSingerInf} from "../../api/singer";
   import {singerMixin} from "../../utils/mixin";
-
+  import {createSong} from "../../assets/js/song";
+  import MusicList from "../musicList/musicList";
   export default {
     name: "singerDetail",
     mixins: [singerMixin],
+    components:{MusicList},
     computed:{
       title(){
         return this.singer.name;
@@ -33,7 +35,20 @@
     },
     methods: {
       initSingerDetail() {
-        getSingerInf(this.singer.id).then(data => console.log(data) );
+        getSingerInf(this.singer.id).then(data => {
+          this.songs=this.normalizeSongs(data.hotSongs);
+        });
+      },
+      normalizeSongs(list){
+        let ret=[];
+        list.forEach(item=>{
+          if(item.id&&item.al.id){
+            createSong(item).then(data=>{
+              ret.push(data);
+            });
+          }
+        });
+        return ret;
       }
     }
   };
@@ -41,6 +56,7 @@
 
 <style scoped lang="scss">
     @import "src/assets/sass/transitions";
+
     /*測試類*/
     .singerDetail {
         position: absolute;
@@ -51,4 +67,5 @@
         background-color: black;
         z-index: 1000;
     }
+
 </style>

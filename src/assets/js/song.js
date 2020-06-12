@@ -21,15 +21,19 @@ export class Song {
     }
 }
 
-export function createSong(musicData) {
+export async function createSong(musicData) {
+    let _url='';
+    await getSong(musicData.id).then(data=>{
+        _url=data.data[0].url;
+    });
     return new Song({
-        id: musicData.songid,
+        id: musicData.id,
         name:musicData.name,
-        singer:filterSinger(musicData.ar),
+        ar:filterSinger(musicData.ar),
         al:musicData.al,
-        duration:musicData.dt,
+        dt:musicData.dt,
         image:musicData.al.picUrl,
-        url:getSong(musicData.id)
+        url:_url
     });
 }
 
@@ -43,3 +47,4 @@ function filterSinger(singer){
     });
     return ret.join('/');
 }
+
