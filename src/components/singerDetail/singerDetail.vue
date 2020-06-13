@@ -1,6 +1,7 @@
 <template>
     <transition name="fade-slide-right" appear>
-        <music-list :title="title" :bg-image="bgImage" :songs="songs"></music-list>
+        <!--<music-list :title="title" :bg-image="bgImage" :songs="songs"></music-list>-->
+        <my-music-list :title="title" :bg-image="bgImage" :songs="songs"></my-music-list>
     </transition>
 </template>
 
@@ -8,11 +9,12 @@
   import {getSingerInf} from "../../api/singer";
   import {singerMixin} from "../../utils/mixin";
   import {createSong} from "../../assets/js/song";
-  import MusicList from "../musicList/musicList";
+  import MusicList from "../singerInf/musicList";
+  import MyMusicList from "../singerInf/singerInf";
   export default {
     name: "singerDetail",
     mixins: [singerMixin],
-    components:{MusicList},
+    components:{MyMusicList},
     computed:{
       title(){
         return this.singer.name;

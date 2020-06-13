@@ -8,20 +8,22 @@
             <!--遮罩-->
             <div class="filter" ref="filter"></div>
         </div>
-        <div class="card">
+        <div class="card" ref="card">
             <div class="card-item-wrapper">
                 <div class="card-item">主页</div>
                 <div class="card-item">歌曲</div>
                 <div class="card-item">专辑</div>
                 <div class="card-item">视频</div>
             </div>
-            <better-scroll :data="songs" class="list" ref="list" @scroll="scroll">
-                <div class="song-list-wrapper">
-                    <song-list :songs="songs"></song-list>
-                </div>
-            </better-scroll>
         </div>
+        <div class="bg-layer" ref="layer"></div>
+        <better-scroll :data="songs" class="list" ref="list" @scroll="scroll"
+                       :listen-scroll="listenScroll" :probe-type="probeType">
+            <div class="song-list-wrapper">
+                <song-list :songs="songs"></song-list>
+            </div>
 
+        </better-scroll>
     </div>
 </template>
 
@@ -29,6 +31,9 @@
   import Loading from "../../base/loading/loading";
   import BetterScroll from "../../base/betterScroll/betterScroll";
   import SongList from "../../base/songList/songList";
+  import {pxToRem} from "../../assets/js/utils";
+
+  const RESERVED_HEIGHT = 75;
 
   export default {
     name: "musicList",
@@ -51,7 +56,9 @@
     },
     /*滚动条的活动范围*/
     mounted() {
-      this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`;
+      this.imageHeight = this.$refs.bgImage.clientHeight;
+      this.minTransalteY = -this.imageHeight + RESERVED_HEIGHT;
+      this.$refs.list.$el.style.top = `${pxToRem(this.imageHeight+37)}`;//${this.imageHeight+37}px ${pxToRem(this.imageHeight)}
     },
     computed: {
       bgStyle() {
@@ -63,9 +70,34 @@
         scrollY: 0
       };
     },
-    methods:{
-      scroll(){
+    created() {
+      this.probeType = 3;
+      this.listenScroll = true;
+    },
+    methods: {
+      scroll(pos) {
+        this.scrollY = pos.y;
+      }
+    },
+    watch: {
+      scrollY(newVal) {
+        let translateY = Math.max(this.minTransalteY, newVal);
+        let zIndex = 0;
 
+        this.$refs.layer.style['transform'] = `translate3d(0,${pxToRem(translateY)} ,0)`;//${translateY}px  ${pxToRem(translateY)
+        console.log(pxToRem(translateY),'translateY',translateY);
+        if (newVal < this.minTransalteY) {
+          zIndex = 1;
+          this.$refs.bgImage.style.paddingTop = 0;
+          this.$refs.bgImage.style.height = `${pxToRem(36)}`;  //${pxToRem(36)}
+          this.$refs.card.style['transform']=`translate3d(0,${pxToRem(36)},0)`; //${pxToRem(36)}
+        } else {
+          this.$refs.bgImage.style.paddingTop = '70%';
+          this.$refs.bgImage.style.height = 0;
+          this.$refs.card.style['transform'] = `translate3d(0,${pxToRem(translateY+1)},0)`; //${translateY+1}px  ${pxToRem(translateY+1)}
+
+        }
+        this.$refs.bgImage.style.zIndex = zIndex;
       }
     }
 
@@ -83,7 +115,7 @@
         left: 0;
         bottom: 0;
         right: 0;
-        background: $color-background;
+        background:$c-b ;
 
         .back {
             position: absolute;
@@ -121,6 +153,7 @@
             transform-origin: top;
             background-size: cover;
             z-index: 100;
+
             .filter {
                 position: absolute;
                 top: 0;
@@ -131,19 +164,19 @@
             }
         }
 
-        .card{
+        .card {
+            position: relative;
             width: 100%;
-            .card-item-wrapper{
+            z-index: 1000;
+            .card-item-wrapper {
                 position: relative;
                 z-index: 1000;
                 background-color: $color-background;
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
-                color: $color-theme;
                 border-radius: 0.7rem 0.7rem 0 0;
-                top: -0.64rem;
-                .card-item{
+                .card-item {
                     font-size: 0.667rem;
                     display: flex;
                     justify-content: center;
@@ -151,25 +184,33 @@
                     padding: 0.4rem 0;
                 }
             }
-            .list {
-                position: fixed;
-                top: 0;
-                bottom: 0;
-                width: 100%;
-                background: $color-background;/*$*/
+        }
 
-                .song-list-wrapper {
-                    padding: 20px 30px
-                }
+        .list {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 100%;
 
-                .loading-container {
-                    position: absolute;
-                    width: 100%;
-                    top: 50%;
-                    transform: translateY(-50%);
-                }
 
+            .song-list-wrapper {
+                padding: 0.533rem 0.8rem
             }
+
+            .loading-container {
+                position: absolute;
+                width: 100%;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+        }
+
+
+        .bg-layer {
+            position: relative;
+            height: 200%;
+            background: $color-background;
         }
     }
 </style>

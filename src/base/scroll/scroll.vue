@@ -53,7 +53,6 @@
         overflow-x: hidden;
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
-
         &::-webkit-scrollbar {
             display: none;
         }
