@@ -26,6 +26,14 @@
             <div class="song-list-wrapper" v-if="selectIndex===2">
                 <song-list :songs="songs" :rank="true"></song-list>
             </div>
+            <!--专辑-->
+            <div class="album-list-wrapper" v-if="selectIndex===3">
+                <album-list></album-list>
+            </div>
+            <!--视频-->
+            <div class="video-list-wrapper" >
+                <video-list></video-list>
+            </div>
         </scroll>
 
     </div>
@@ -36,9 +44,11 @@
   import SongList from "../../base/songList/songList";
   import {pxToRem} from "../../assets/js/utils";
   import MainPage from "../../base/mainPage/mainPage";
+  import AlbumList from "../../base/albumList/albumList";
+  import VideoList from "../../base/videoList/videoList";
   export default {
     name: "myMusicList",
-    components: {Scroll, SongList,MainPage},
+    components: {Scroll, SongList,MainPage,AlbumList,VideoList},
     props: {
       bgImage: String,
       songs: {

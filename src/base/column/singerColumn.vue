@@ -56,31 +56,46 @@
          width: 100%;
          -webkit-overflow-scrolling: touch;
          overflow-y: hidden;
-
          .list-item{
              display: inline-block;
-             width: 25%;
-             height: 4.447rem;
-             background-color:$c-b-d;
-             margin-right: 0.533rem;
+             width: 33%;
+             height: 4.447rem; //4.447
+             background-color: rgba(154,70,42,.1);
+
+             border-radius: 0.533rem;
+             margin-right: 1.2rem;
              .flex-wrapper{
                  display: flex;
                  flex-direction: column;
                  justify-content: center;
                  align-items: center;
+                 width: 100%;
+                 height: 100%;
+                 flex-wrap: wrap;
+                 overflow: hidden;
                  .img{
+                     flex: 1;
                      img{
+                         padding-top: 0.2rem;
                          border-radius: 50%;
-                         width: 50%;
+                         width: 2rem;
+                         height: 2rem;
                      }
                  }
                  .content{
                      flex: 1;
-                     font-size: 0.533rem;
+                     padding-top: 0.267rem;
+                     font-size: 0.373rem;
+                     font-weight: 800;
+                     line-height: 0.3rem;
+                     color: #D09B6B;
+
                  }
                  .subscribe{
-                     flex: 1;
+                     padding: 0.25rem;
                      font-size: 0.4rem;
+                     background-color: $c-t-s;
+                     border-radius: 0.533rem;
                  }
              }
          }
