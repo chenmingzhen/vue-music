@@ -6,12 +6,12 @@ import "../src/assets/sass/index.scss";
 import fastClick from "fastclick";
 import VueLazyLoad from "vue-lazyload";
 Vue.config.productionTip = false;
-
-/*import 'nprogress/nprogress.css';*/
+/*import NProgress from 'nprogress';*/
+import './assets/sass/nprogress.scss';
+import NProgress from './assets/js/nprogress';
 
 /*兄弟组件传值 eventBus*/
 export const eventBus=new Vue();
-
 
 Vue.use(VueLazyLoad,{
   error:require('../src/assets/image/fail.png'),

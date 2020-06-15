@@ -15,7 +15,8 @@
 
 <style scoped lang="scss">
     @import "./src/assets/sass/variable";
-    .tab{
+
+    .tab {
         display: flex;
         height: 1.173rem;
         line-height: 1.173rem;
@@ -23,15 +24,18 @@
         background-color: $color-background;
         z-index: 1000;
         position: relative;
-        .tab-item{
+
+        .tab-item {
             flex: 1;
             text-align: center;
-            .tab-link{
+
+            .tab-link {
                 padding-bottom: 0.133rem;
                 color: $color-text-l;
             }
-            &.router-link-active{
-                .tab-link{
+
+            &.router-link-active {
+                .tab-link {
                     color: $color-theme;
                     border-bottom: 0.053rem solid $color-theme;
                 }

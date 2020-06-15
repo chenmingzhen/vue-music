@@ -31,7 +31,7 @@
                 <album-list></album-list>
             </div>
             <!--视频-->
-            <div class="video-list-wrapper" >
+            <div class="video-list-wrapper" v-if="selectIndex===4">
                 <video-list></video-list>
             </div>
         </scroll>

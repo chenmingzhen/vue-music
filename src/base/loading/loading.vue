@@ -14,7 +14,10 @@
   export default {
     name: "loading",
     props:{
-      text:String
+      text:{
+        type:String,
+        default:'加载中...'
+      }
     }
   };
 </script>

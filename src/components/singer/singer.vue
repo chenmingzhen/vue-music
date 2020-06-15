@@ -55,7 +55,6 @@
           //this.$refs.scroll.scrollTo(0,0);
         }).catch(e => {
           NProgress.done();
-          // TODO 添加刷新失败信息
           this.fail = -1;
           console.log(e);
         });
