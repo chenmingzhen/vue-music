@@ -35,16 +35,17 @@
   display: block;
   position: fixed;
   z-index: 1031;
-  top: 15px;
-  right: 15px;
+  top: 0.187rem;
+  //top: 15px;
+  //right: 15px;
 }
 
 #nprogress .spinner-icon {
-  width: 18px;
-  height: 18px;
+  width: 0.48rem;
+  height: 0.48rem;
   box-sizing: border-box;
 
-  border: solid 2px transparent;
+  border: solid 0.053rem transparent;
   border-top-color: #ffcd32;
   border-left-color: #ffcd32;
   border-radius: 50%;
