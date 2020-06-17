@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 export function pxToRem(px) {
     return px/37.5+'rem';
 }
@@ -29,4 +31,18 @@ export function formatDuration(mss) {
     let minutes = parseInt((mss % (1000 * 60 * 60)) / (1000 * 60));
     let seconds = (mss % (1000 * 60)) / 1000;
     return minutes + ":" + seconds;
+}
+
+
+
+export function getToken(TokenKey = 'User-Token') {
+    return Cookies.get(TokenKey);
+}
+
+export function setToken(token,TokenKey = 'User-Token') {
+    return Cookies.set(TokenKey, token);
+}
+
+export function removeToken(TokenKey = 'User-Token') {
+    return Cookies.remove(TokenKey);
 }

@@ -11,13 +11,24 @@
 <script>
   import MHeader from "./components/m-header/m-header";
   import Tab from './components/tab/tab.vue';
-  import Refresh from "../src/base/refresh/refresh";
+  import {getToken} from "./assets/js/utils";
+  import {login} from "./api/login";
+  import {userMixin} from "./utils/mixin";
 
   export default {
     components: {
       MHeader,
       Tab,
       /*Refresh*/
+    },
+    mixins:[userMixin],
+    created() {
+      if(getToken()){
+        login(getToken('phone'),getToken('password')).then(data=>{
+          this.setUser({data});
+          console.log(this.user.data.profile.avatarUrl);
+        });
+      }
     }
   };
 
@@ -36,7 +47,8 @@
 <style lang="scss">
     .app {
         position: relative;
-        .m-header,.tab{
+
+        .m-header, .tab {
             z-index: 1000;
         }
     }

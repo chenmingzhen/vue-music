@@ -6,6 +6,7 @@ const all={
     scrollFix:state=>state.recommend.scrollFix,
     recommendOffsetY:state=>state.recommend.recommendOffsetY,
     /*singer*/
-    singer:state=>state.singer.singer
+    singer:state=>state.singer.singer,
+    user:state=>state.userInf.user
 };
 export default all;

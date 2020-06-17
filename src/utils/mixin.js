@@ -25,3 +25,12 @@ export const singerMixin={
         ...mapActions(['setSinger'])
     }
 };
+
+export const userMixin={
+    computed: {
+        ...mapGetters(['user'])
+    },
+    methods: {
+        ...mapActions(['setUser'])
+    }
+};

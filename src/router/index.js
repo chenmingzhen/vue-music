@@ -37,6 +37,14 @@ const routes = [
     {
         path: '/search',
         component: () => import('../components/search/search.vue'),
+    },
+    {
+        path:'/login',
+        component: () => import('../components/login/login.vue'),
+    },
+    {
+        path:'/selfInformation',
+        component: () => import('../components/selfInformation/selfInformation.vue'),
     }
 ];
 
@@ -52,6 +60,8 @@ router.beforeEach((to, from, next) => {
     }
     next();
 });
+
+
 router.afterEach((to, from) => {
     try {
         NProgress.done();

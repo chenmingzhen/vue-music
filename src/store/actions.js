@@ -18,6 +18,9 @@ const actions={
     /*singer*/
     setSinger:({commit},singer)=>{
         return commit('SET_SINGER',singer);
+    },
+    setUser:({commit},user)=>{
+        return commit('SET_USER',user);
     }
 };
 export default actions;
