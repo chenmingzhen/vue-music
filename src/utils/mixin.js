@@ -34,3 +34,11 @@ export const userMixin={
         ...mapActions(['setUser'])
     }
 };
+
+export const utilMixin={
+    methods:{
+            back() {
+                this.$router.go(-1);
+            }
+    }
+};
