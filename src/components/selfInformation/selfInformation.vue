@@ -98,9 +98,12 @@
       scrollY(newVal){
         let translateY = Math.max(this.minTransalteY, newVal);
         let zIndex = 0;
-        console.log(translateY);
+        let scale = 1;
+        let blur = 0;
+        const percent = Math.abs(newVal / this.imageHeight);
         if (newVal > 0) {
           zIndex = 1000;
+          scale = 1 + percent;
         }
         this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`;//能用
         //上面就初步可以了
@@ -112,6 +115,7 @@
           this.$refs.bgImage.style.paddingTop = '70%';
           this.$refs.bgImage.style.height = 0;
         }
+        this.$refs.bgImage.style['transform'] = `scale(${scale})`;
         this.$refs.bgImage.style.zIndex = zIndex.toString();
 
       }
