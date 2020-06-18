@@ -36,7 +36,6 @@
     /*由于keep-alive 不使用create*/
     activated() {
       /*已经登陆*/
-      console.log(this.user);
       if (getToken()) {
         this.$router.push('/selfInformation');
       }

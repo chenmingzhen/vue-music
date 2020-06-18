@@ -38,7 +38,7 @@ export const userMixin={
 export const utilMixin={
     methods:{
             back() {
-                this.$router.go(-1);
+                this.$router.go(-2);
             }
     }
 };
