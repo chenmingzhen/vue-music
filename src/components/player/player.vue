@@ -1,5 +1,6 @@
 <template>
-    <div class="player" v-show="playList.length>0">
+    <!--添加了:key 就不卡顿了 不知道为什么-->
+    <div class="player" v-if="playList.length>0" :key="myKey">
         <div class="normal-player" v-show="fullScreen">
             <div class="background">
                 <img :src="currentSong.image" alt="" style="width: 100%; height: 100%;">
@@ -12,13 +13,14 @@
             <div class="middle">
                 <div class="middle-left" ref="middleL">
                     <div class="cd-wrapper" ref="cdWrapper">
-                        <div class="cd" :class="cdCls">
+                        <div class="cd" :class="cdCls" id="cd">
                             <img class="image" :src="currentSong.image">
                         </div>
                     </div>
                     <div class="playing-lyric-wrapper">
                         <div class="playing-lyric">{{playingLyric}}</div>
                     </div>
+                    <canvas class="music-cover-background" id="my-background">your brower does not support canvas</canvas>
                 </div>
             </div>
             <div class="bottom">
@@ -61,6 +63,7 @@
 
 <script>
   import {playMixin} from "../../utils/mixin";
+  import {createCanvas} from "../../assets/js/lonelyPlanet";
 
   export default {
     name: "player",
@@ -73,7 +76,8 @@
         currentLyric: null,
         currentLineNum: 0,
         currentShow: 'cd',
-        playingLyric: ''
+        playingLyric: '',
+        myKey:0
       };
     },
     computed: {
@@ -93,6 +97,20 @@
     methods: {
       back() {
         this.setFullScreen(false);
+      }
+    },
+
+    watch:{
+      fullScreen(val){
+        /*话说会重新渲染 但是好像没效果 没触发生命周期 */
+        ++this.myKey;
+        /*使这个操作在最后进行 否则dom报错*/
+        setTimeout(()=>{
+          /*置空 避免多个实例*/
+          this.scene=null;
+          this.scene=createCanvas();
+          this.scene.run();
+        });
       }
     }
   };
@@ -208,6 +226,20 @@
                                 border-radius: 50%;
                             }
                         }
+                    }
+                    .music-cover-background{
+                        position: absolute;
+                        left: -30%;
+                        top: -6rem;
+                        width: 23.75rem;
+                        height: 23.75rem;
+                        box-sizing: border-box;
+                        z-index: -1;
+                        /* border: 0.125rem solid #B3B3B3; */
+                        border-radius: 50%;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
                     }
                 }
             }
