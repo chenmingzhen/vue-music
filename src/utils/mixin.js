@@ -46,12 +46,12 @@ export const utilMixin={
 
 export const playMixin={
     computed: {
-        ...mapGetters(['playing','fullScreen','playList','sequenceList','mode','currentIndex']),
+        ...mapGetters(['playing','fullScreen','playList','sequenceList','mode','currentIndex','currentSong']),
         iconMode(){
             return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
         }
     },
     methods:{
-        ...mapActions(['selectPlay'])
+        ...mapActions(['selectPlay','setFullScreen'])
     }
 };

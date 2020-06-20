@@ -1,20 +1,19 @@
 <template>
-    <div class="player">
-        <div class="normal-player" v-show="playList.length>0">
+    <div class="player" v-show="playList.length>0">
+        <div class="normal-player" v-show="fullScreen">
             <div class="background">
-                <img src="" alt="" style="width: 100%; height: 100%;">
+                <img :src="currentSong.image" alt="" style="width: 100%; height: 100%;">
             </div>
             <div class="top">
-                <div class="back"><i class="icon-back"></i></div>
-                <h1 class="title"></h1>
-                <h2 class="subtitle"></h2>
+                <div class="back" @click="back"><i class="icon-back"></i></div>
+                <h1 class="title">{{currentSong.name}}</h1>
+                <h2 class="subtitle">{{currentSong.singer}}</h2>
             </div>
             <div class="middle">
                 <div class="middle-left" ref="middleL">
                     <div class="cd-wrapper" ref="cdWrapper">
                         <div class="cd" :class="cdCls">
-                            <img v-if="$store.state.currentSong" class="image" :src="$store.state.currentSong.image">
-                            <!--:src="$store.state.currentSong.image"-->
+                            <img class="image" :src="currentSong.image">
                         </div>
                     </div>
                     <div class="playing-lyric-wrapper">
@@ -24,9 +23,9 @@
             </div>
             <div class="bottom">
                 <div class="operators">
-                     <div class="icon i-left" >
-                         <i :class="iconMode"></i>
-                     </div>
+                    <div class="icon i-left">
+                        <i :class="iconMode"></i>
+                    </div>
                     <div class="icon i-left" :class="disableCls">
                         <i class="icon-prev"></i>
                     </div>
@@ -37,19 +36,19 @@
                         <i class="icon-next"></i>
                     </div>
                     <div class="icon i-right">
-                        <i class="icon"></i>
+                        <i class="icon icon-not-favorite"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="mini-player" v-show="!$store.state.fullScreen&&playList>0">
+        <div class="mini-player" v-show="!fullScreen&&playList.length>0">
             <div class="icon">
-                <img v-if="$store.state.currentSong" :class="cdCls" width="40" height="40"
-                     :src="$store.state.currentSong.image"><!--:src="$store.state.currentSong.image"-->
+                <img :class="cdCls" v-if="currentSong"
+                     :src="currentSong.image"><!--:src="$store.state.currentSong.image"-->
             </div>
             <div class="text">
-                <h2 class="name"></h2>
-                <p class="desc"></p>
+                <h2 class="name" v-html="currentSong.name"></h2>
+                <p class="desc" v-html="currentSong.singer"></p>
             </div>
             <div class="control">
             </div>
@@ -90,6 +89,11 @@
       disableCls() {
         return this.songReady ? '' : 'disable';
       }
+    },
+    methods: {
+      back() {
+        this.setFullScreen(false);
+      }
     }
   };
 </script>
@@ -117,7 +121,7 @@
                 z-index: -1;
                 opacity: .6;
                 /*模糊*/
-                filter: blur(1rem);
+                filter: blur(1.2rem);
             }
 
             .top {
@@ -145,14 +149,14 @@
                     line-height: 1.6rem;
                     text-align: center;
                     @include no-wrap;
-                    font-size: 1.4rem;
+                    font-size: 0.8rem;
                     color: $c-t;
                 }
 
                 .subtitle {
                     line-height: 0.8rem;
                     text-align: center;
-                    font-size: 1.2rem;
+                    font-size: 0.6rem;
                     color: $c-t-s;
                 }
             }
@@ -243,10 +247,78 @@
                         text-align: left;
                     }
 
-                    .icon-favorite{
-                        color:$color-sub-theme;
+                    .icon-favorite {
+                        color: $color-sub-theme;
                     }
                 }
+            }
+        }
+
+        .mini-player {
+            display: flex;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            z-index: 18000;
+            width: 100%;
+            height: 2.4rem;
+            background: $color-highlight-background;
+
+            .icon {
+                flex: 0 0 1.6rem;
+                width: 1.6rem;
+                padding: 0 0.4rem 0 0.8rem;
+                display: flex;
+                align-items: center;
+
+                img {
+                    border-radius: 50%;
+                    width: 1.6rem;
+                    height: 1.6rem;
+                }
+            }
+
+            .text {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                flex: 1;
+                line-height: 0.8rem;
+                overflow: hidden;
+
+                .name {
+                    margin-bottom: 0.08rem;
+                    @include no-wrap();
+                    font-size: 0.6rem;
+                    color: $c-t;
+                }
+
+                .desc {
+                    @include no-wrap();
+                    font-size: 0.4rem;
+                    color: $color-text-d;
+                }
+            }
+
+            .control {
+                flex: 0 0 1.2rem;
+                width: 1.2rem;
+                padding: 0 0.4rem;
+                display: flex;
+                align-items: center;
+
+                .icon-play-mini, .icon-pause-mini, .icon-playlist {
+                    font-size: 1rem;
+                    color: #9A462A;
+                }
+
+                .icon-mini {
+                    font-size: 1rem;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                }
+
             }
         }
     }

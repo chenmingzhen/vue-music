@@ -29,6 +29,9 @@ const actions={
         commit('SET_CURRENT_INDEX', index);
         commit('SET_FULLSCREEN', true);
         commit('SET_PLAYING', true);
+    },
+    setFullScreen:({commit},isFull)=>{
+        return commit('SET_FULLSCREEN',isFull);
     }
 };
 export default actions;

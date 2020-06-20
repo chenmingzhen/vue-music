@@ -15,6 +15,6 @@ const all={
     sequenceList:state=>state.play.sequenceList,
     mode:state=>state.play.mode,
     currentIndex:state=>state.play.currentIndex,
-    currentSong:state=>state.playList[state.currentIndex]||{}
+    currentSong:state=>state.play.playList[state.play.currentIndex]||{}
 };
 export default all;
