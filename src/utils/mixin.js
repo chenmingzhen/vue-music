@@ -1,4 +1,5 @@
 import {mapGetters,mapActions} from "vuex";
+import {playMode} from "../assets/js/config";
 
 export const recommendMixin={
     computed:{
@@ -40,5 +41,17 @@ export const utilMixin={
             back() {
                 this.$router.go(-2);
             }
+    }
+};
+
+export const playMixin={
+    computed: {
+        ...mapGetters(['playing','fullScreen','playList','sequenceList','mode','currentIndex']),
+        iconMode(){
+            return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
+        }
+    },
+    methods:{
+        ...mapActions(['selectPlay'])
     }
 };

@@ -1,7 +1,7 @@
 <template>
     <div class="song-list">
         <ul>
-            <li class="item" v-for="(song,index) in songs" :key="index">
+            <li class="item" v-for="(song,index) in songs" :key="index" @click="selectItem(song,index)">
                 <div class="rank" v-if="rank">{{index+1}}.</div>
                 <div class="album" v-if="album"><img v-lazy="song.album.picUrl" alt=""></div>
                 <div class="content">
@@ -34,6 +34,9 @@
     methods:{
       getDesc(song){
         return `${song.singer}·${song.album.name}`;
+      },
+      selectItem(item,index){
+        this.$emit('selectItem',item,index);
       }
     }
   };

@@ -6,6 +6,7 @@
         <keep-alive>
             <router-view/>
         </keep-alive>
+        <player></player>
     </div>
 </template>
 <script>
@@ -14,12 +15,13 @@
   import {getToken} from "./assets/js/utils";
   import {login} from "./api/login";
   import {userMixin} from "./utils/mixin";
-
+  import Player from "./components/player/player";
   export default {
     components: {
       MHeader,
       Tab,
       /*Refresh*/
+      Player
     },
     mixins:[userMixin],
     created() {

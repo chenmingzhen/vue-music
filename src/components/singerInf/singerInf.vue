@@ -2,7 +2,7 @@
     <div class="music-list-wrapper">
         <div>
             <div class="back">
-                <i class="icon-back"></i>
+                <i class="icon-back" @click="back"></i>
             </div>
             <h1 class="title" v-html="title"></h1>
         </div>
@@ -24,7 +24,7 @@
             </div>
             <!--歌曲-->
             <div class="song-list-wrapper" v-if="selectIndex===2">
-                <song-list :songs="songs" :rank="true"></song-list>
+                <song-list :songs="songs" :rank="true" @selectItem="handleSelect"></song-list>
             </div>
             <!--专辑-->
             <div class="album-list-wrapper" v-if="selectIndex===3">
@@ -46,9 +46,12 @@
   import MainPage from "../../base/mainPage/mainPage";
   import AlbumList from "../../base/albumList/albumList";
   import VideoList from "../../base/videoList/videoList";
+  import {playMixin} from "../../utils/mixin";
+
   export default {
     name: "myMusicList",
     components: {Scroll, SongList,MainPage,AlbumList,VideoList},
+    mixins:[playMixin],
     props: {
       bgImage: String,
       songs: {
@@ -86,6 +89,15 @@
       },
       clickItem(index){
         this.selectIndex=index;
+      },
+      handleSelect(item,index){
+        this.selectPlay({
+          list:this.songs,
+          index
+        });
+      },
+      back(){
+        this.$router.go(-1);
       }
     }
   };

@@ -21,6 +21,14 @@ const actions={
     },
     setUser:({commit},user)=>{
         return commit('SET_USER',user);
+    },
+    /*play*/
+    selectPlay:({commit,state},{list,index})=>{
+        commit('SET_PLAYLIST', list);
+        commit('SET_SEQUENCE_LIST',list);
+        commit('SET_CURRENT_INDEX', index);
+        commit('SET_FULLSCREEN', true);
+        commit('SET_PLAYING', true);
     }
 };
 export default actions;
