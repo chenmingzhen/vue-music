@@ -2,10 +2,71 @@
   transform: translate3d(100%, 0, 0);
   opacity: 0;
 }
+
 .fade-slide-right-enter-to, .fade-slide-right-leave {
   transform: translate3d(0, 0, 0);
   opacity: 1;
 }
-.fade-slide-right-enter-active,.fade-slide-right-leave-active{
+
+.fade-slide-right-enter-active, .fade-slide-right-leave-active {
   transition: all .4s;
+}
+
+
+.normal-enter-active, .normal-leave-active {
+  transition: all .5s;
+
+  .top, .bottom {
+    transition: all .5s cubic-bezier(0.86, 0.18, 0.82, 1.32);
+  }
+}
+
+.normal-enter, .normal-leave-to {
+  opacity: 0;
+
+  .top {
+    transform: translate3d(0, -4rem, 0);
+  }
+
+  .bottom {
+    transform: translate3d(0, 4rem, 0);
+  }
+
+}
+
+.normal-enter-to, .normal-leave {
+  opacity: 1;
+
+  .top {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .bottom {
+    transform: translate3d(0, 0, 0);
+  }
+
+}
+
+.mini-enter-active, .mini-leave-active {
+  transition: all .7s;
+}
+
+.mini-enter, .mini-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 2rem, 0);
+
+  /*测试 不知道为什么这个没有生效 上面却可以*/
+  /*.mini-player {
+    height: 200px;
+  }*/
+
+}
+
+.mini-enter-to, .mini-leave {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+
+ /* .mini-player {
+    height: 500px;
+  }*/
 }

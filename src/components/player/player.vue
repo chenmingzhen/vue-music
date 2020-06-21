@@ -1,70 +1,78 @@
 <template>
     <!--添加了:key 就不卡顿了 不知道为什么-->
-    <div class="player" v-if="playList.length>0" :key="myKey">
-        <div class="normal-player" v-show="fullScreen">
-            <div class="background">
-                <img :src="currentSong.image" alt="" style="width: 100%; height: 100%;">
-            </div>
-            <div class="top">
-                <div class="back" @click="back"><i class="icon-back"></i></div>
-                <h1 class="title">{{currentSong.name}}</h1>
-                <h2 class="subtitle">{{currentSong.singer}}</h2>
-            </div>
-            <div class="middle">
-                <div class="middle-left" ref="middleL">
-                    <div class="cd-wrapper" ref="cdWrapper">
-                        <div class="cd" :class="cdCls" id="cd">
-                            <img class="image" :src="currentSong.image">
+    <div class="player" v-show="playList.length>0">
+        <transition name="normal" appear @enter="enter"
+                    @after-enter="afterEnter"
+                    @leave="leave"
+                    @after-leave="afterLeave">
+            <div class="normal-player" v-show="fullScreen" >
+                <div class="background">
+                    <img :src="currentSong.image" alt="" style="width: 100%; height: 100%;">
+                </div>
+                <div class="top">
+                    <div class="back" @click="back"><i class="icon-back"></i></div>
+                    <h1 class="title">{{currentSong.name}}</h1>
+                    <h2 class="subtitle">{{currentSong.singer}}</h2>
+                </div>
+                <div class="middle">
+                    <div class="middle-left" ref="middleL">
+                        <div class="cd-wrapper" ref="cdWrapper">
+                            <div class="cd" :class="cdCls" id="cd">
+                                <img class="image" :src="currentSong.image">
+                            </div>
+                        </div>
+                        <div class="playing-lyric-wrapper">
+                            <div class="playing-lyric">{{playingLyric}}</div>
+                        </div>
+                        <canvas class="music-cover-background" id="my-background" :key="myKey">your brower does not support canvas
+                        </canvas>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="operators">
+                        <div class="icon i-left">
+                            <i :class="iconMode"></i>
+                        </div>
+                        <div class="icon i-left" :class="disableCls">
+                            <i class="icon-prev"></i>
+                        </div>
+                        <div class="icon i-center" :class="disableCls">
+                            <i :class="playIcon"></i>
+                        </div>
+                        <div class="icon i-right" :class="disableCls">
+                            <i class="icon-next"></i>
+                        </div>
+                        <div class="icon i-right">
+                            <i class="icon icon-not-favorite"></i>
                         </div>
                     </div>
-                    <div class="playing-lyric-wrapper">
-                        <div class="playing-lyric">{{playingLyric}}</div>
-                    </div>
-                    <canvas class="music-cover-background" id="my-background">your brower does not support canvas</canvas>
                 </div>
             </div>
-            <div class="bottom">
-                <div class="operators">
-                    <div class="icon i-left">
-                        <i :class="iconMode"></i>
-                    </div>
-                    <div class="icon i-left" :class="disableCls">
-                        <i class="icon-prev"></i>
-                    </div>
-                    <div class="icon i-center" :class="disableCls">
-                        <i :class="playIcon"></i>
-                    </div>
-                    <div class="icon i-right" :class="disableCls">
-                        <i class="icon-next"></i>
-                    </div>
-                    <div class="icon i-right">
-                        <i class="icon icon-not-favorite"></i>
-                    </div>
+        </transition>
+        <transition name="mini" >
+            <div class="mini-player" v-show="!fullScreen&&playList.length>0" @click="open">
+                <div class="icon">
+                    <img :class="cdCls" v-if="currentSong"
+                         :src="currentSong.image"><!--:src="$store.state.currentSong.image"-->
+                </div>
+                <div class="text">
+                    <h2 class="name" v-html="currentSong.name"></h2>
+                    <p class="desc" v-html="currentSong.singer"></p>
+                </div>
+                <div class="control">
+                </div>
+                <div class="control">
+                    <i class="icon-playlist"></i>
                 </div>
             </div>
-        </div>
-        <div class="mini-player" v-show="!fullScreen&&playList.length>0">
-            <div class="icon">
-                <img :class="cdCls" v-if="currentSong"
-                     :src="currentSong.image"><!--:src="$store.state.currentSong.image"-->
-            </div>
-            <div class="text">
-                <h2 class="name" v-html="currentSong.name"></h2>
-                <p class="desc" v-html="currentSong.singer"></p>
-            </div>
-            <div class="control">
-            </div>
-            <div class="control">
-                <i class="icon-playlist"></i>
-            </div>
-        </div>
+        </transition>
     </div>
 </template>
 
 <script>
   import {playMixin} from "../../utils/mixin";
   import {createCanvas} from "../../assets/js/lonelyPlanet";
-
+  import animations from 'create-keyframe-animation';
   export default {
     name: "player",
     mixins: [playMixin],
@@ -77,7 +85,7 @@
         currentLineNum: 0,
         currentShow: 'cd',
         playingLyric: '',
-        myKey:0
+        myKey: 0
       };
     },
     computed: {
@@ -97,18 +105,69 @@
     methods: {
       back() {
         this.setFullScreen(false);
+      },
+      open(){
+        this.setFullScreen(true);
+      },
+      getPositionAndScale(){
+        const targetWidth = 40;
+        const paddingLeft = 40;
+        const paddingBottom = 30;
+        const paddingTop = 80;
+        const width = window.innerWidth * 0.8;
+        const scale = targetWidth / width;
+        const x = -(window.innerWidth / 2 - paddingLeft);
+        const y = window.innerHeight - paddingTop - width / 2 - paddingBottom;
+        return {
+          x,
+          y,
+          scale
+        };
+      },
+      /*animation start*/
+      enter(el,done){
+        const {x,y,scale}=this.getPositionAndScale();
+        let animation = {
+          0: {
+            transform: `translate3d(${x/25}rem,${y/25}rem,0) scale(${scale})`
+          },
+          60: {
+            transform: `translate3d(0,0,0) scale(1.1)`
+          },
+          100: {
+            transform: `translate3d(0,0,0) scale(1)`
+          }
+        };
+        /*使用插件*/
+        animations.registerAnimation({name:'move',animation,presets:{duration:700,easing:'linear'}});
+        animations.runAnimation(this.$refs.cdWrapper, 'move', done);
+
+      },
+      afterEnter() {
+        animations.unregisterAnimation('move');
+        this.$refs.cdWrapper.style.animation = '';
+      },
+      leave(el, done) {
+        this.$refs.cdWrapper.style.transition = 'all .7s';
+        const {x, y, scale} = this.getPositionAndScale();
+        this.$refs.cdWrapper.style['transform'] = `translate3d(${x/25}rem,${y/25}rem,0) scale(${scale})`;
+        this.$refs.cdWrapper.addEventListener('transitionend', done);
+      },
+      afterLeave() {
+        this.$refs.cdWrapper.style.transition = '';
+        this.$refs.cdWrapper.style['transform'] = '';
       }
+      /*animation end*/
     },
 
-    watch:{
-      fullScreen(val){
+    watch: {
+      fullScreen(val) {
         /*话说会重新渲染 但是好像没效果 没触发生命周期 */
         ++this.myKey;
         /*使这个操作在最后进行 否则dom报错*/
-        setTimeout(()=>{
-          /*置空 避免多个实例*/
-          this.scene=null;
-          this.scene=createCanvas();
+        setTimeout(() => {
+          this.scene = null;
+          this.scene = createCanvas();
           this.scene.run();
         });
       }
@@ -119,6 +178,7 @@
 <style scoped lang="scss">
     @import "src/assets/sass/variable.scss";
     @import "src/assets/sass/mixin.scss";
+    @import "src/assets/sass/transitions.scss";
 
     .player {
         .normal-player {
@@ -139,7 +199,7 @@
                 z-index: -1;
                 opacity: .6;
                 /*模糊*/
-                filter: blur(1.2rem);
+                filter: blur(0.2rem);
             }
 
             .top {
@@ -227,7 +287,8 @@
                             }
                         }
                     }
-                    .music-cover-background{
+
+                    .music-cover-background {
                         position: absolute;
                         left: -30%;
                         top: -6rem;
@@ -295,6 +356,7 @@
             width: 100%;
             height: 2.4rem;
             background: $color-highlight-background;
+
 
             .icon {
                 flex: 0 0 1.6rem;
