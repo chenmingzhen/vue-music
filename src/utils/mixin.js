@@ -52,6 +52,6 @@ export const playMixin={
         }
     },
     methods:{
-        ...mapActions(['selectPlay','setFullScreen'])
+        ...mapActions(['selectPlay','setFullScreen','setCurrentIndex','setPlaying'])
     }
 };

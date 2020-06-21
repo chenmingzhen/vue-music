@@ -5,7 +5,7 @@
                     @after-enter="afterEnter"
                     @leave="leave"
                     @after-leave="afterLeave">
-            <div class="normal-player" v-show="fullScreen" >
+            <div class="normal-player" v-show="fullScreen">
                 <div class="background">
                     <img :src="currentSong.image" alt="" style="width: 100%; height: 100%;">
                 </div>
@@ -24,7 +24,8 @@
                         <div class="playing-lyric-wrapper">
                             <div class="playing-lyric">{{playingLyric}}</div>
                         </div>
-                        <canvas class="music-cover-background" id="my-background" :key="myKey">your brower does not support canvas
+                        <canvas class="music-cover-background" id="my-background" :key="myKey">your brower does not
+                            support canvas
                         </canvas>
                     </div>
                 </div>
@@ -33,13 +34,13 @@
                         <div class="icon i-left">
                             <i :class="iconMode"></i>
                         </div>
-                        <div class="icon i-left" :class="disableCls">
+                        <div class="icon i-left" :class="disableCls" @click="prev">
                             <i class="icon-prev"></i>
                         </div>
-                        <div class="icon i-center" :class="disableCls">
+                        <div class="icon i-center" :class="disableCls" @click="togglePlaying">
                             <i :class="playIcon"></i>
                         </div>
-                        <div class="icon i-right" :class="disableCls">
+                        <div class="icon i-right" :class="disableCls" @click="next">
                             <i class="icon-next"></i>
                         </div>
                         <div class="icon i-right">
@@ -49,7 +50,7 @@
                 </div>
             </div>
         </transition>
-        <transition name="mini" >
+        <transition name="mini">
             <div class="mini-player" v-show="!fullScreen&&playList.length>0" @click="open">
                 <div class="icon">
                     <img :class="cdCls" v-if="currentSong"
@@ -60,12 +61,14 @@
                     <p class="desc" v-html="currentSong.singer"></p>
                 </div>
                 <div class="control">
+                    <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
                 </div>
                 <div class="control">
                     <i class="icon-playlist"></i>
                 </div>
             </div>
         </transition>
+        <audio :src="currentSong.url" ref="audio" @play="ready" @error="error" @ended="end"></audio>
     </div>
 </template>
 
@@ -73,6 +76,7 @@
   import {playMixin} from "../../utils/mixin";
   import {createCanvas} from "../../assets/js/lonelyPlanet";
   import animations from 'create-keyframe-animation';
+
   export default {
     name: "player",
     mixins: [playMixin],
@@ -85,7 +89,7 @@
         currentLineNum: 0,
         currentShow: 'cd',
         playingLyric: '',
-        myKey: 0
+        myKey: 0,
       };
     },
     computed: {
@@ -106,10 +110,10 @@
       back() {
         this.setFullScreen(false);
       },
-      open(){
+      open() {
         this.setFullScreen(true);
       },
-      getPositionAndScale(){
+      getPositionAndScale() {
         const targetWidth = 40;
         const paddingLeft = 40;
         const paddingBottom = 30;
@@ -125,11 +129,11 @@
         };
       },
       /*animation start*/
-      enter(el,done){
-        const {x,y,scale}=this.getPositionAndScale();
+      enter(el, done) {
+        const {x, y, scale} = this.getPositionAndScale();
         let animation = {
           0: {
-            transform: `translate3d(${x/25}rem,${y/25}rem,0) scale(${scale})`
+            transform: `translate3d(${x / 25}rem,${y / 25}rem,0) scale(${scale})`
           },
           60: {
             transform: `translate3d(0,0,0) scale(1.1)`
@@ -139,7 +143,7 @@
           }
         };
         /*使用插件*/
-        animations.registerAnimation({name:'move',animation,presets:{duration:700,easing:'linear'}});
+        animations.registerAnimation({name: 'move', animation, presets: {duration: 700, easing: 'linear'}});
         animations.runAnimation(this.$refs.cdWrapper, 'move', done);
 
       },
@@ -150,14 +154,70 @@
       leave(el, done) {
         this.$refs.cdWrapper.style.transition = 'all .7s';
         const {x, y, scale} = this.getPositionAndScale();
-        this.$refs.cdWrapper.style['transform'] = `translate3d(${x/25}rem,${y/25}rem,0) scale(${scale})`;
+        this.$refs.cdWrapper.style['transform'] = `translate3d(${x / 25}rem,${y / 25}rem,0) scale(${scale})`;
         this.$refs.cdWrapper.addEventListener('transitionend', done);
       },
       afterLeave() {
         this.$refs.cdWrapper.style.transition = '';
         this.$refs.cdWrapper.style['transform'] = '';
-      }
+      },
       /*animation end*/
+      /*audio start*/
+      ready() {
+        this.songReady = true;
+      },
+      error() {
+        this.songReady = true;
+      },
+      end() {
+        this.next();
+      },
+      next() {
+        if (!this.songReady) {
+          return;
+        }
+        if (this.playList.length === 1) {
+          this.loop();
+          return;
+        } else {
+          let index = this.currentIndex + 1;
+          if (index === this.playList.length) {
+            index = 0;
+          }
+          this.setCurrentIndex(index);
+          if (!this.playing) {
+            this.togglePlaying();
+          }
+        }
+        this.songReady = false;
+      },
+      prev() {
+        if (!this.songReady) {
+          return;
+        }
+        if (this.playList.length === 1) {
+          this.loop();
+          return;
+        } else {
+          let index = this.currentIndex - 1;
+          if (index === -1) {
+            index = this.playList.length - 1;
+          }
+          this.setCurrentIndex(index);
+          if (!this.playing) {
+            this.togglePlaying();
+          }
+        }
+        this.songReady = false;
+      },
+      togglePlaying(){
+        if (!this.songReady) {
+          return;
+        }
+        this.setPlaying(!this.playing);
+      }
+      /*audio end*/
+
     },
 
     watch: {
@@ -169,6 +229,25 @@
           this.scene = null;
           this.scene = createCanvas();
           this.scene.run();
+        });
+      },
+      /*通过监听vuex值 决定播放与暂停*/
+      playing(newPlaying) {
+        const audio = this.$refs.audio;
+        this.$nextTick(() => {
+          newPlaying ? audio.play() : audio.pause();
+        });
+      },
+      currentSong(newSong, oldSong) {
+        if (!newSong.id) {
+          return;
+        }
+        if (newSong.id === oldSong.id) {
+          return;
+        }
+        /*要在下次dom更新才生效*/
+        this.$nextTick(()=>{
+          this.$refs.audio.play();
         });
       }
     }
@@ -408,7 +487,6 @@
 
                 .icon-mini {
                     font-size: 1rem;
-                    position: absolute;
                     left: 0;
                     top: 0;
                 }
