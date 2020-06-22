@@ -1,4 +1,5 @@
 import {getSong} from "../../api/singer";
+import {getLyric} from "../../api/play";
 
 export class Song {
     /**
@@ -18,6 +19,19 @@ export class Song {
         this.duration=dt;
         this.image=al.picUrl;
         this.url=url;
+    }
+
+    /*获取歌词*/
+    //https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e8%8e%b7%e5%8f%96%e6%ad%8c%e8%af%8d
+    _getLyric(){
+        if(this.lyric){
+            return Promise.resolve(this.lyric);
+        }
+        return new Promise(((resolve, reject) => {
+            getLyric(this.id).then(data=>{
+                resolve(data);
+            });
+        }));
     }
 }
 

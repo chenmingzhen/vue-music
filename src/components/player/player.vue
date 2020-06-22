@@ -14,7 +14,10 @@
                     <h1 class="title">{{currentSong.name}}</h1>
                     <h2 class="subtitle">{{currentSong.singer}}</h2>
                 </div>
-                <div class="middle">
+                <div class="middle"
+                     @touchstart.prevent="middleTouchStart"
+                     @touchmove.prevent="middleTouchMove"
+                     @touchend="middleTouchEnd">
                     <div class="middle-left" ref="middleL">
                         <div class="cd-wrapper" ref="cdWrapper">
                             <div class="cd" :class="cdCls" id="cd">
@@ -28,8 +31,22 @@
                             support canvas
                         </canvas>
                     </div>
+                    <better-scroll class="middle-right" ref="lyricList" :data="currentLyric && currentLyric.lines">
+                        <div class="lyric-wrapper">
+                            <div v-if="currentLyric">
+                                <p ref="lyricLine"
+                                   class="text"
+                                   :class="{'current': currentLineNum ===index}"
+                                   v-for="(line,index) in currentLyric.lines" :key="index">{{line.txt}}</p>
+                            </div>
+                        </div>
+                    </better-scroll>
                 </div>
                 <div class="bottom">
+                    <div class="dot-wrapper">
+                        <span class="dot" :class="{'active':currentShow==='cd'}"></span>
+                        <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
+                    </div>
                     <div class="progress-wrapper">
                         <span class="time time-l">{{format(currentTime)}}</span>
                         <div class="progress-bar-wrapper">
@@ -85,11 +102,13 @@
   import {createCanvas} from "../../assets/js/lonelyPlanet";
   import animations from 'create-keyframe-animation';
   import ProgressBar from "../../base/progressBar/progressBar";
+  import Lyric from 'lyric-parser';
+  import BetterScroll from "../../base/betterScroll/betterScroll";
 
   export default {
     name: "player",
     mixins: [playMixin],
-    components: {ProgressBar},
+    components: {ProgressBar, BetterScroll},
     data() {
       return {
         songReady: false,
@@ -116,8 +135,11 @@
         return this.songReady ? '' : 'disable';
       },
       percent() {
-        return this.currentTime / this.currentSong.duration*1000;
+        return this.currentTime / this.currentSong.duration * 1000;
       }
+    },
+    created() {
+      this.touch = {};
     },
     methods: {
       back() {
@@ -228,6 +250,9 @@
           return;
         }
         this.setPlaying(!this.playing);
+        if (this.currentLyric) {
+          this.currentLyric.togglePlay();
+        }
       },
       /*audio end*/
       /*progress start*/
@@ -252,8 +277,88 @@
         const currentTime = this.currentSong.duration * percent;
         /*拖动Bug*/
         this.$refs.audio.currentTime = currentTime;
-      }
+      },
       /*progress end*/
+      getLyric() {
+        this.currentSong._getLyric().then(lyric => {
+          /*if (this.currentSong.lyric !== lyric.lrc.lyric) {
+                                return;
+                              }*/
+          this.currentLyric = new Lyric(lyric.lrc.lyric, this.handleLyric);
+          if (this.playing) {
+            this.currentLyric.play();
+          }
+        }).catch((e) => {
+          this.currentLyric = null;
+          this.playingLyric = '';
+          this.currentLineNum = 0;
+          console.log(e);
+        });
+      },
+      handleLyric({lineNum, txt}) {
+        this.currentLineNum = lineNum;
+        if (lineNum > 5) {
+          let lineEl = this.$refs.lyricLine[lineNum - 5];
+          this.$refs.lyricList.scrollToElement(lineEl, 1000);
+        } else {
+          this.$refs.lyricList.scrollTo(0, 0, 1000);
+        }
+        this.playingLyric = txt;
+      },
+      middleTouchStart(e){
+        this.touch.initiated=true;
+        const touch=e.touches[0];
+        this.touch.startX=touch.pageX;
+        this.touch.startY=touch.pageY;
+      },
+      middleTouchMove(e){
+        if (!this.touch.initiated) {
+          return;
+        }
+        const touch = e.touches[0];
+        const deltaX = touch.pageX - this.touch.startX;
+        const deltaY = touch.pageY - this.touch.startY;
+        /*Y滚动大于X则不操作*/
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          return;
+        }
+        const left = this.currentShow === 'cd' ? 0 : -window.innerWidth;
+        const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX));
+        this.touch.percent = Math.abs(offsetWidth / window.innerWidth);
+        this.$refs.lyricList.$el.style['transform'] = `translate3d(${offsetWidth/25}rem,0,0)`;
+        this.$refs.lyricList.$el.style['transitionDuration'] = 0;
+        this.$refs.middleL.style.opacity = 1 - this.touch.percent;
+        this.$refs.middleL.style['transitionDuration'] = 0;
+      },
+      middleTouchEnd() {
+        let offsetWidth;
+        let opacity;
+        if (this.currentShow === 'cd') {
+          if (this.touch.percent > 0.1) {
+            offsetWidth = -window.innerWidth;
+            opacity = 0;
+            this.currentShow = 'lyric';
+          } else {
+            offsetWidth = 0;
+            opacity = 1;
+          }
+        } else {
+          if (this.touch.percent < 0.9) {
+            offsetWidth = 0;
+            this.currentShow = 'cd';
+            opacity = 1;
+          } else {
+            offsetWidth = -window.innerWidth;
+            opacity = 0;
+          }
+        }
+        const time = 700;
+        this.$refs.lyricList.$el.style['transform'] = `translate3d(${offsetWidth/25}rem,0,0)`;
+        this.$refs.lyricList.$el.style['transitionDuration'] = `${time}ms`;
+        this.$refs.middleL.style.opacity = opacity;
+        this.$refs.middleL.style['transitionDuration'] = `${time}ms`;
+        this.touch.initiated = false;
+      }
     },
     watch: {
       fullScreen(val) {
@@ -280,9 +385,16 @@
         if (newSong.id === oldSong.id) {
           return;
         }
+        if (this.currentLyric) {
+          this.currentLyric.stop();
+          this.currentTime = 0;
+          this.playingLyric = '';
+          this.currentLineNum = 0;
+        }
         /*要在下次dom更新才生效*/
         this.$nextTick(() => {
           this.$refs.audio.play();
+          this.getLyric();
         });
       }
     }
@@ -402,6 +514,18 @@
                         }
                     }
 
+                    .playing-lyric-wrapper{
+                        width: 80%;
+                        margin: 1.2rem auto 0 auto;
+                        overflow: hidden;
+                        text-align: center;
+                        .playing-lyric{
+                            height: 0.8rem;
+                            line-height: 0.8rem;
+                            font-size: $font-size-large-x;
+                            color: $color-text-l;
+                        }
+                    }
                     .music-cover-background {
                         position: absolute;
                         left: -30%;
@@ -417,12 +541,60 @@
                         justify-content: center;
                     }
                 }
+
+                .middle-right {
+                    display: inline-block;
+                    vertical-align: top;
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+
+                    .lyric-wrapper {
+                        width: 80%;
+                        margin: 0 auto;
+                        overflow: hidden;
+                        text-align: center;
+
+                        .text {
+                            line-height: 32px;
+                            color: $c-t-s;
+                            font-size: 0.6rem;
+                        }
+
+                        .current {
+                            color: $color-text
+                        }
+
+                    }
+
+                }
             }
 
             .bottom {
                 position: absolute;
                 bottom: 2rem;
                 width: 100%;
+
+                .dot-wrapper {
+                    text-align: center;
+                    font-size: 0;
+
+                    .dot {
+                        display: inline-block;
+                        vertical-align: middle;
+                        margin: 0 0.16rem;
+                        width: 0.32rem;
+                        height: 0.32rem;
+                        border-radius: 50%;
+                        background: $color-text-l;
+
+                        &.active {
+                            width: 0.8rem;
+                            border-radius: 0.2rem;
+                            background: $color-text-ll;
+                        }
+                    }
+                }
 
                 .operators {
                     display: flex;
