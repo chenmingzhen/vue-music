@@ -30,6 +30,13 @@
                     </div>
                 </div>
                 <div class="bottom">
+                    <div class="progress-wrapper">
+                        <span class="time time-l">{{format(currentTime)}}</span>
+                        <div class="progress-bar-wrapper">
+                            <progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>
+                        </div>
+                        <span class="time time-r">{{format(currentSong.duration/1000)}}</span>
+                    </div>
                     <div class="operators">
                         <div class="icon i-left">
                             <i :class="iconMode"></i>
@@ -68,7 +75,8 @@
                 </div>
             </div>
         </transition>
-        <audio :src="currentSong.url" ref="audio" @play="ready" @error="error" @ended="end"></audio>
+        <audio :src="currentSong.url" ref="audio" @play="ready" @error="error" @ended="end"
+               @timeupdate="updateTime"></audio>
     </div>
 </template>
 
@@ -76,10 +84,12 @@
   import {playMixin} from "../../utils/mixin";
   import {createCanvas} from "../../assets/js/lonelyPlanet";
   import animations from 'create-keyframe-animation';
+  import ProgressBar from "../../base/progressBar/progressBar";
 
   export default {
     name: "player",
     mixins: [playMixin],
+    components: {ProgressBar},
     data() {
       return {
         songReady: false,
@@ -104,6 +114,9 @@
       },
       disableCls() {
         return this.songReady ? '' : 'disable';
+      },
+      percent() {
+        return this.currentTime / this.currentSong.duration*1000;
       }
     },
     methods: {
@@ -210,16 +223,38 @@
         }
         this.songReady = false;
       },
-      togglePlaying(){
+      togglePlaying() {
         if (!this.songReady) {
           return;
         }
         this.setPlaying(!this.playing);
-      }
+      },
       /*audio end*/
-
+      /*progress start*/
+      updateTime(e) {
+        this.currentTime = e.target.currentTime;
+      },
+      format(interval) {
+        interval = interval | 0;
+        const minute = interval / 60 | 0;
+        const second = this.pad(interval % 60);
+        return `${minute}:${second}`;
+      },
+      pad(num, n = 2) {
+        let len = num.toString().length;
+        while (len < n) {
+          num = '0' + num;
+          len++;
+        }
+        return num;
+      },
+      onProgressBarChange(percent) {
+        const currentTime = this.currentSong.duration * percent;
+        /*拖动Bug*/
+        this.$refs.audio.currentTime = currentTime;
+      }
+      /*progress end*/
     },
-
     watch: {
       fullScreen(val) {
         /*话说会重新渲染 但是好像没效果 没触发生命周期 */
@@ -246,7 +281,7 @@
           return;
         }
         /*要在下次dom更新才生效*/
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.$refs.audio.play();
         });
       }
@@ -423,6 +458,32 @@
                         color: $color-sub-theme;
                     }
                 }
+
+                .progress-wrapper {
+                    display: flex;
+                    align-items: center;
+                    width: 80%;
+                    margin: 0 auto;
+                    padding: 0.4rem 0;
+
+                    .time {
+                        font-size: $font-size-small;
+                        flex: 0 0 1.2rem;
+                        line-height: 1.2rem;
+                    }
+
+                    &.time-l {
+                        text-align: left;
+                    }
+
+                    &.time-r {
+                        text-align: right;
+                    }
+
+                    .progress-bar-wrapper {
+                        flex: 1;
+                    }
+                }
             }
         }
 
@@ -492,6 +553,15 @@
                 }
 
             }
+        }
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0);
+        }
+        100% {
+            transform: rotate(360deg);
         }
     }
 </style>
