@@ -2,7 +2,7 @@
     <div class="column-wrapper">
         <div class="text-wrapper">
             <div class="title">{{columnData.title}}</div>
-            <div class="more">更多></div>
+            <div class="more" @click="toSongList">更多></div>
         </div>
         <div class="list" @touchmove="_columnMove" @touchend="_columnEnd">
             <div class="list-item" v-for="(item,index) in columnData" :key="index">
@@ -35,6 +35,9 @@
       },
       _columnEnd() {
         this.setColumnMove(false);
+      },
+      toSongList() {
+        this.$router.push({path:'/moreSongList',query:{title:this.columnData.title}});
       }
     }
   };
@@ -83,6 +86,7 @@
             /*柔顺*/
             -webkit-overflow-scrolling: touch;
             overflow-y: hidden;
+
             .list-item {
                 display: inline-block;
                 flex-direction: column;

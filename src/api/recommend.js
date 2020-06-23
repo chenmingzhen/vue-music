@@ -29,3 +29,9 @@ export function getCategoryColumn(limit=6,cat='华语'){
     return request({url,method:'get',params:{limit,cat}});
 }
 
+/*歌单详细*/
+export function getPlayList(id) {
+    const url='/playlist/detail';
+    return request({url,method:'get',params:{id}});
+}
+

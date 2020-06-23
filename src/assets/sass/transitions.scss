@@ -13,6 +13,22 @@
 }
 
 
+.fade-slide-down-enter, .fade-slide-down-leave-to {
+  transform: translate3d(0, 100%, 0);
+  opacity: 0;
+}
+
+.fade-slide-down-enter-to, .fade-slide-down-leave {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+.fade-slide-down-enter-active, .fade-slide-down-leave-active {
+  transition: all .4s;
+}
+
+
+
 .normal-enter-active, .normal-leave-active {
   transition: all .5s;
 

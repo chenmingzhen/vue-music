@@ -45,7 +45,14 @@ const routes = [
     {
         path:'/selfInformation',
         component: () => import('../components/selfInformation/selfInformation.vue'),
-    }
+    },
+    {
+        path:'/moreSongList',
+        component:()=> import('../components/songList/songList.vue'),
+    },{
+        path:'/songListItem',
+        component:()=> import('../components/songList/songListItem.vue'),
+    },
 ];
 
 const router = new VueRouter({
