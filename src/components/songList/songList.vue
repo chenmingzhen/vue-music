@@ -90,7 +90,6 @@
         this.$router.go(-1);
       },
       goToSongListItem(item){
-        console.log(item);
         this.$router.push({path:'/songListItem',query:{id:item.id}});
       }
     }
