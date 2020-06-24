@@ -6,7 +6,7 @@
                 <div class="hot-text">近期热门</div>
                 <div class="hot-more">更多热门 ></div>
             </div>
-            <song-list :songs="songs.slice(0,3)" :album="true"></song-list>
+            <song-list :songs="songs.slice(0,3)" :album="true" @selectItem="handleSelect"></song-list>
         </div>
         <div class="basic-info" v-if="briefDesc">
             <div class="basic-info-text-wrapper">
@@ -30,13 +30,13 @@
 
 <script>
   import SongList from "../../base/songList/songList";
-  import {singerMixin} from "../../utils/mixin";
+  import {playMixin, singerMixin} from "../../utils/mixin";
   import {getSingerInf} from "../../api/singer";
   import SingerColumn from "../column/singerColumn";
 
   export default {
     name: "mainPage",
-    mixins: [singerMixin],
+    mixins: [singerMixin,playMixin],
     // eslint-disable-next-line vue/no-unused-components
     components: {SongList,SingerColumn},
     props: {
@@ -53,6 +53,14 @@
       }).catch(e=>{
         console.log('mainPageError');
       });
+    },
+    methods:{
+      handleSelect(item,index){
+        this.selectPlay({
+          list:this.songs,
+          index
+        });
+      }
     }
   };
 </script>

@@ -17,8 +17,8 @@
             </div>
         </div>
         <loading v-if="searching" class="loading"></loading>
-        <scroll :top="150" ref="scroll" class="search-content" :bottom="0" v-if="searchResult&&!searching" @onScroll="scroll">
-            <song-list :songs="searchResult" :rank="true"></song-list>
+        <scroll :top="150" ref="scroll" class="search-content" :bottom="0" v-if="searchResult&&!searching">
+            <song-list :songs="searchResult" :rank="true" @selectItem="handleSelect"></song-list>
         </scroll>
     </div>
 </template>
@@ -30,9 +30,11 @@
   import {Song} from "../../assets/js/song";
   import SongList from "../../base/songList/songList";
   import Loading from "../../base/loading/loading";
+  import {playMixin} from "../../utils/mixin";
   export default {
     name: "search",
     components: {Scroll,SongList,Loading},
+    mixins:[playMixin],
     data() {
       return {
         content: '',
@@ -86,8 +88,11 @@
         this.content = item;
         this.$refs.input.focus();
       },
-      scroll(scrollTop){
-
+      handleSelect(item,index){
+        this.selectPlay({
+          list:this.searchResult,
+          index
+        });
       }
     }
   };

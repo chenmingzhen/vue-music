@@ -37,7 +37,7 @@
                 </div>
                 <div class="play-list-wrapper">
                     <div class="title">收藏的歌单</div>
-                    <div class="bottom-wrapper"  v-for="(item,index) in playList" :key="index">
+                    <div class="bottom-wrapper"  v-for="(item,index) in playList" :key="index" @click="toSongListItem(item)">
                         <div class="img"><img v-lazy="item.coverImgUrl" alt=""></div>
                         <div class="list-title">{{item.name}}</div>
                     </div>
@@ -69,7 +69,6 @@
   import {userMixin} from "../../utils/mixin";
   import BetterScroll from "../../base/betterScroll/betterScroll";
   import {getLikeMusic,getPlayList,getSubscribeSinger} from "../../api/selfInformation";
-  import SingerItem from "../../base/singerItem/singerItem";
   export default {
     name: "selfInformation",
     mixins: [utilMixin, userMixin],
@@ -142,6 +141,9 @@
     methods:{
       scroll(pos) {
         this.scrollY = pos.y;
+      },
+      toSongListItem(item){
+        this.$router.push({path:'/songListItem',query:{id:item.id}});
       }
     },
     watch:{

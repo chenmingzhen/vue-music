@@ -5,7 +5,7 @@
             <div class="more" @click="toSongList">更多></div>
         </div>
         <div class="list" @touchmove="_columnMove" @touchend="_columnEnd">
-            <div class="list-item" v-for="(item,index) in columnData" :key="index">
+            <div class="list-item" v-for="(item,index) in columnData" :key="index" @click="toSongListItem(item)">
                 <div class="img">
                     <a>
                         <img v-lazy="item.picUrl||item.coverImgUrl" alt="">
@@ -37,8 +37,12 @@
         this.setColumnMove(false);
       },
       toSongList() {
-        this.$router.push({path:'/moreSongList',query:{title:this.columnData.title}});
+        this.$router.push({path: '/moreSongList', query: {title: this.columnData.title}});
+      },
+      toSongListItem(item) {
+        this.$router.push({path:'/songListItem',query:{id:item.id}});
       }
+
     }
   };
 </script>

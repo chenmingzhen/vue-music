@@ -16,7 +16,7 @@
                 </div>
                 <div class="song-list">
                     <ul class="ul">
-                        <li class="item" v-for="(song,_index) in songData[index]" :key="_index">
+                        <li class="item" v-for="(song,_index) in songData[index]" :key="_index" @click="handleSelect(song,_index,index)">
                             <div class="rank">{{_index+1}}.</div>
                             <div class="content">
                                 <h2 class="name">{{song.name}}</h2>
@@ -36,9 +36,11 @@
   import {createSong} from "../../assets/js/song";
   import Scroll from "../../base/scroll/recommendScroll";
   import Loading from "../../base/loading/loading";
+  import {playMixin} from "../../utils/mixin";
   export default {
     name: 'rank',
     components: {Scroll,Loading},
+    mixins:[playMixin],
     data() {
       return {
         rankData: [],
@@ -74,9 +76,6 @@
             })();
           }
         })();
-        setTimeout(() => {
-          console.log(this.songData);
-        }, 10000);
       },
       getDesc(song) {
         return `${song.singer}·${song.album.name}`;
@@ -108,6 +107,12 @@
           console.log(index);
         }
 
+      },
+      handleSelect(song,_index,index){
+        this.selectPlay({
+          list:this.songData[index],
+          index:_index
+        });
       }
     }
   };

@@ -11,7 +11,7 @@
             <div class="bg-layer" ref="layer"></div>
             <better-scroll class="list" ref="list" @scroll="scroll" :listen-scroll=true :probe-type=3>
                 <div class="item-wrapper" ref="wrapper">
-                    <song-list :songs="songList" :rank="true"></song-list>
+                    <song-list :songs="songList" :rank="true" @selectItem="handleSelect"></song-list>
                 </div>
             </better-scroll>
         </div>
@@ -23,11 +23,12 @@
   import BetterScroll from "../../base/betterScroll/betterScroll";
   import {createSong} from "../../assets/js/song";
   import SongList from "../../base/songList/songList";
-  import Scroll from "../../base/scroll/scroll";
+  import {playMixin} from "../../utils/mixin";
 
   export default {
     name: "songListItem",
     components: {BetterScroll, SongList},
+    mixins:[playMixin],
     data() {
       return {
         dataList: {},
@@ -57,6 +58,12 @@
       },
       scroll(pos) {
         this.scrollY = pos.y;
+      },
+      handleSelect(item,index){
+        this.selectPlay({
+          list:this.songList,
+          index
+        });
       }
     },
     computed: {
@@ -110,7 +117,7 @@
         bottom: 0;
         right: 0;
         z-index: 10000;
-        background-color: $c-b-d;
+        background-color: #222;
 
         .icon, .subscribe {
             z-index: 5000;
@@ -139,7 +146,7 @@
         .bg-layer {
             position: relative;
             height: 100%;
-            background: $c-b;
+            background: transparent;
         }
 
         .list {
@@ -151,7 +158,7 @@
             .item-wrapper {
                 width: 100%;
                 border-radius: 1.2rem 1.2rem 0 0;
-                background-color: $c-b-d;
+                background-color: #222;
 
                 .song-list {
                     padding: 0 0.8rem;
