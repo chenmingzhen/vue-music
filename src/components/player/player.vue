@@ -55,9 +55,9 @@
                         <span class="time time-r">{{format(currentSong.duration/1000)}}</span>
                     </div>
                     <div class="operators">
-                        <div class="icon i-left">
+                       <!--  <div class="icon i-left">
                             <i :class="iconMode"></i>
-                        </div>
+                        </div> -->
                         <div class="icon i-left" :class="disableCls" @click="prev">
                             <i class="icon-prev"></i>
                         </div>
@@ -67,9 +67,9 @@
                         <div class="icon i-right" :class="disableCls" @click="next">
                             <i class="icon-next"></i>
                         </div>
-                        <div class="icon i-right">
+                       <!--  <div class="icon i-right">
                             <i class="icon icon-not-favorite"></i>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -276,7 +276,7 @@
       onProgressBarChange(percent) {
         const currentTime = this.currentSong.duration * percent;
         /*拖动Bug*/
-        this.$refs.audio.currentTime = currentTime;
+        this.$refs.audio.currentTime = currentTime/1000;
       },
       /*progress end*/
       getLyric() {
@@ -292,7 +292,6 @@
           this.currentLyric = null;
           this.playingLyric = '';
           this.currentLineNum = 0;
-          console.log(e);
         });
       },
       handleLyric({lineNum, txt}) {

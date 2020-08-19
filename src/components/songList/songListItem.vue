@@ -2,7 +2,7 @@
     <transition name="fade-slide-down">
         <div class="song-list-item-wrapper">
             <div class="icon" @click="back"><i class="icon-back"></i></div>
-            <div class="subscribe">收藏</div>
+            <!-- <div class="subscribe">收藏</div> -->
             <!--封面背景-->
             <div class="bg-image" :style="bgStyle" ref="bgImage">
 
